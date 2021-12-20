@@ -23,6 +23,6 @@ public class MoneyController {
     @PreAuthorize("hasAuthority('USER')")
     @PostMapping("")
     String Tranfers(@RequestBody FormMoney formMoney)  {
-        return userService.tranferMoney(formMoney.getSdtNguoiNhan(), formMoney.getSoTien());
+        return userService.tranferMoney(formMoney.getSdtNguoiNhan(), formMoney.getSoTien(), "BANK_CKICKEN");
     }
 }

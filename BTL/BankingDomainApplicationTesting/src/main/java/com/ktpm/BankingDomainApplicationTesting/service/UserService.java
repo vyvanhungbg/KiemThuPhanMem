@@ -45,15 +45,19 @@ public class UserService implements UserDetailsService {
 
     }
 
-    public String tranferMoney(String phoneNumberProvide, String money ){
+    public String tranferMoney(String phoneNumberProvide, String money, String nganHang){
         User nguoiChuyen = myService.getUser();
+
         if(nguoiChuyen == null){
-            return "Cần đăng nhập để thực hiện chức năng chuyển tiền này";
+            return "Can dang nhap de thuc hien chuc nang nay";
+        }
+        if(nganHang.equals("BANK_CKICKEN") == false){
+            return "Ngan hang khong ton tai so tai khoan nay";
         }
         User nguoiNhan = userRepository.findUserByNumberPhone(phoneNumberProvide);
         if(nguoiNhan == null){
-            System.out.println("Người nhân tiền không tồn tại");
-            return "Người nhân tiền không tồn tại";
+            System.out.println("Nguoi Nhan Khong ton tai");
+            return "So tai khoan khong ton tai";
         }
         Double soTienChuyen=0D;
         Double tienNguoiNhan=0D;
@@ -63,16 +67,24 @@ public class UserService implements UserDetailsService {
             tienNguoiChuyen = Double.parseDouble(nguoiChuyen.getMoney());
             tienNguoiNhan = Double.parseDouble(nguoiNhan.getMoney());
         }catch (Exception e){
-            System.out.println("Lỗi chuyển tieenfv thử lại");
-            return "Lỗi chuyển tiền thử lại";
+            System.out.println("Số tiền không hợp lệ");
+            return "So tien khong hop le";
         }
         if( soTienChuyen<0){
-            System.out.println("Số tiền chuyển không được âm");
-            return "Số tiền chuyển không được âm ";
+            System.out.println("Số tiền không hợp lệ");
+            return "So tien khong hop le";
         }
+        /*if(soTienChuyen <1000){
+            System.out.println("Số tiền không hợp lệ");
+            return "So tien toi giao dich toi thieu la 1000đ";
+        }*/
+       /* if(soTienChuyen > 1000000){
+            System.out.println("Số tiền không hợp lệ");
+            return "Han muc giao dich toi da 100.000.000đ";
+        }*/
         if(tienNguoiChuyen < soTienChuyen){
             System.out.println("Số tiền trong tài khoản cần lớn hơn số tiền cần chuyển");
-            return "Số tiền trong tài khoản cần lớn hơn số tiền cần chuyển , số tiền bạn là "+ tienNguoiChuyen + "Nhưng bạn chuyển : "+soTienChuyen;
+            return "Giao dich that bai. So du khong du";
         }
 
         // bat dau chuyen tien
@@ -84,18 +96,18 @@ public class UserService implements UserDetailsService {
         User nguoiChuyenSave = userRepository.save(nguoiChuyen);
         if(nguoiChuyenSave == null || nguoiChuyenSave.getMoney().equals(tienNguoiChuyen)){
             System.out.println("Lỗi chuyển tiền ở người gửi ");
-            return "Lỗi chuyển tiền ở người gửi ";
+            return "Giao dich that bai";
         }
 
         User nguoiNhanSave = userRepository.save(nguoiNhan);
         if(nguoiNhanSave == null || nguoiNhanSave.getMoney().equals(tienNguoiNhan)){
             System.out.println("Lỗi chuyển tiền ở người nhận ");
-            return "Lỗi chuyển tiền ở người nhận ";
+            return "Giao dich that bai";
         }
         System.out.println("Chuyen tien thanh cong !");
         System.out.println("Người nhận " + nguoiNhanSave.getUserName() + " So tien : "+ nguoiNhanSave.getMoney());
         System.out.println("Người Chuyển  " + nguoiChuyenSave.getUserName() + " So tien : "+ nguoiChuyenSave.getMoney());
-        return "Chuyển tiền thành công !";
+        return "Chuyen tien thanh cong !";
     }
 
 

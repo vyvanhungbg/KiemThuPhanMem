@@ -6,7 +6,6 @@ import com.ktpm.BankingDomainApplicationTesting.service.UserService;
 import com.ktpm.BankingDomainApplicationTesting.ultil.WebUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -53,7 +52,11 @@ public class MainController {
     }
 
     @RequestMapping(value = "/login", method = RequestMethod.GET)
-    public String loginPage(Model model) {
+    public String loginPage(Model model,@RequestParam(name = "error", defaultValue = "false")Boolean error) {
+        if(error){
+            model.addAttribute("error",error);
+            model.addAttribute("mess","Tài khoản mật khẩu không chính xác !");
+        }
         model.addAttribute("user", new com.ktpm.BankingDomainApplicationTesting.entity.User());
         return "login";
     }
@@ -127,8 +130,8 @@ public class MainController {
     @PostMapping("/clickTranfer")
     public String clickTranfer(@ModelAttribute("hoadon") FormMoney hoadon, ModelMap modelMap, Model model) {
         modelMap.addAttribute("hoadon", hoadon);
-
-        String mess = userService.tranferMoney(hoadon.getSdtNguoiNhan(), hoadon.getSoTien());
+        System.out.println(hoadon.getNganHang());
+        String mess = userService.tranferMoney(hoadon.getSdtNguoiNhan(), hoadon.getSoTien(), hoadon.getNganHang());
         System.out.println("--------++++++++++++++++++++++++++++"+mess);
         model.addAttribute("message", mess);
         return "success_tranfer";

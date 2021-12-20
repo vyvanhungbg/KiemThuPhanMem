@@ -32,7 +32,10 @@ public class LoginController {
 
     @GetMapping("")
     String  getAllBill(){
-        return "Heloo fake";
+        return "{\n" +
+                "    \"userName\": \"hung\",\n" +
+                "    \"userPassword\": \"hung123\"\n" +
+                "}";
     }
 
     @PostMapping("")
